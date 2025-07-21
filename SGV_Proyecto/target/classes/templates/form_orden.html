@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Formulario Orden</title></head>
+<body>
+<h2 th:text="${orden.id == null} ? 'Nueva Orden' : 'Editar Orden'"></h2>
+<form th:action="@{/mecanico/ordenes/guardar}" th:object="${orden}" method="post">
+    <input type="hidden" th:field="*{id}">
+    Estado: <input type="text" th:field="*{estado}" required><br>
+    Descripción: <textarea th:field="*{descripcion}" required></textarea><br>
+    Cliente: 
+    <select th:field="*{cliente}">
+        <option th:each="cliente : ${clientes}" th:value="${cliente}" 
+                th:text="${cliente.nombreCompleto}">Cliente</option>
+    </select><br>
+    <button type="submit">Guardar</button>
+</form>
+<a th:href="@{/mecanico/ordenes}">Volver</a>
+</body>
+</html>

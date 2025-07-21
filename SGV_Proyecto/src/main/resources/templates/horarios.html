@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Horarios Disponibles</title>
+</head>
+<body>
+<h2>Horarios Disponibles</h2>
+<table border="1">
+    <tr>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Estado</th>
+    </tr>
+    <tr th:each="horario : ${horarios}">
+        <td th:text="${horario.fecha}">2025-07-01</td>
+        <td th:text="${horario.hora}">10:00</td>
+        <td th:text="${horario.estado}">Disponible</td>
+    </tr>
+</table>
+</body>
+</html>

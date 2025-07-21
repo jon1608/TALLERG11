@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Formulario Factura</title></head>
+<body>
+<h2>Nueva Factura</h2>
+<form th:action="@{/admin/facturas/guardar}" th:object="${factura}" method="post">
+    Cliente:
+    <select th:field="*{cliente}">
+        <option th:each="cliente : ${clientes}" th:value="${cliente}" th:text="${cliente.nombreCompleto}">Cliente</option>
+    </select><br><br>
+
+    <h3>Ítems</h3>
+    <div th:each="item, iterStat : *{items}">
+        Descripción: <input type="text" th:field="*{items[__${iterStat.index}__].descripcion}"><br>
+        Cantidad: <input type="number" th:field="*{items[__${iterStat.index}__].cantidad}"><br>
+        Precio Unitario: <input type="number" step="0.01" th:field="*{items[__${iterStat.index}__].precioUnitario}"><br>
+        <br>
+    </div>
+
+    <button type="submit">Guardar</button>
+</form>
+<a th:href="@{/admin/facturas}">Volver</a>
+</body>
+</html>
