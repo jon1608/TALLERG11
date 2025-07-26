@@ -21,6 +21,7 @@ com\sgv\model\Factura.class
 com\sgv\repository\ClienteRepository.class
 com\sgv\model\Usuario.class
 com\sgv\repository\FacturaRepository.class
+com\sgv\controller\MenuController.class
 com\sgv\controller\VehiculoController.class
 com\sgv\model\Vehiculo.class
 com\sgv\repository\UsuarioRepository.class
