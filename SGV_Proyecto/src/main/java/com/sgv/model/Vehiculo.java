@@ -1,7 +1,9 @@
 package com.sgv.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Vehiculo {
@@ -20,7 +22,8 @@ public class Vehiculo {
     private String modelo;
 
     @Min(1900)
-    private int anio;  // ← CAMBIO AQUÍ
+    @Max(2100)
+    private int anio = 2020;
 
     @NotBlank
     private String color;
@@ -28,6 +31,9 @@ public class Vehiculo {
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
+
+    // Constructor vacío
+    public Vehiculo() {}
 
     // Getters y setters
     public Long getId() { return id; }
@@ -42,8 +48,8 @@ public class Vehiculo {
     public String getModelo() { return modelo; }
     public void setModelo(String modelo) { this.modelo = modelo; }
 
-    public int getAnio() { return anio; }  // ← CAMBIO AQUÍ
-    public void setAnio(int anio) { this.anio = anio; }  // ← CAMBIO AQUÍ
+    public int getAnio() { return anio; }
+    public void setAnio(int anio) { this.anio = anio; }
 
     public String getColor() { return color; }
     public void setColor(String color) { this.color = color; }

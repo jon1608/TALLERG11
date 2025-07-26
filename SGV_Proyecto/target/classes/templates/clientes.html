@@ -7,6 +7,9 @@
 </head>
 <body class="container mt-5">
     <h2>Gestión de Clientes</h2>
+    <a th:href="@{/menu}" class="btn btn-secondary mb-3">Volver al Menú Principal</a>
+    
+    
     
     <!-- Botón para agregar cliente -->
     <a href="/admin/clientes/nuevo" class="btn btn-primary mb-3">Agregar Cliente</a>
@@ -30,7 +33,7 @@
                 <td th:text="${cliente.telefono}"></td>
                 <td>
                     <a th:href="@{/admin/clientes/editar/{id}(id=${cliente.id})}" class="btn btn-warning btn-sm">Editar</a>
-                    <a th:href="@{/admin/clientes/eliminar/{id}(id=${cliente.id})}" class="btn btn-danger btn-sm"
+                
                        onclick="return confirm('¿Seguro que deseas eliminar este cliente?')">Eliminar</a>
                     <a th:href="@{/admin/vehiculos/cliente/{id}(id=${cliente.id})}" class="btn btn-info btn-sm">Carros</a>
                 </td>
@@ -39,4 +42,4 @@
     </table>
 </body>
 </html>
-        
+   

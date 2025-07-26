@@ -24,7 +24,7 @@
                 <td th:text="${vehiculo.placa}"></td>
                 <td th:text="${vehiculo.marca}"></td>
                 <td th:text="${vehiculo.modelo}"></td>
-                <td th:text="${vehiculo.año}"></td>
+                <td th:text="${vehiculo.anio}"></td>
                 <td th:text="${vehiculo.color}"></td>
             </tr>
         </tbody>
@@ -32,29 +32,49 @@
 
     <!-- Formulario para agregar vehículo -->
     <h4 class="mt-4">Agregar Vehículo</h4>
-    <form th:action="@{/admin/vehiculos/guardar}" th:object="${vehiculo}" method="post" class="row g-3">
+    <form th:action="@{/admin/vehiculos/guardar}" th:object="${vehiculo}" method="post" class="row g-3 needs-validation" novalidate>
         <input type="hidden" th:name="clienteId" th:value="${cliente.id}" />
 
         <div class="col-md-6">
             <label>Placa</label>
             <input type="text" th:field="*{placa}" class="form-control" required>
+            <div th:if="${#fields.hasErrors('placa')}" class="text-danger">
+                <small th:errors="*{placa}">Error en placa</small>
+            </div>
         </div>
+
         <div class="col-md-6">
             <label>Marca</label>
             <input type="text" th:field="*{marca}" class="form-control" required>
+            <div th:if="${#fields.hasErrors('marca')}" class="text-danger">
+                <small th:errors="*{marca}">Error en marca</small>
+            </div>
         </div>
+
         <div class="col-md-6">
             <label>Modelo</label>
             <input type="text" th:field="*{modelo}" class="form-control" required>
+            <div th:if="${#fields.hasErrors('modelo')}" class="text-danger">
+                <small th:errors="*{modelo}">Error en modelo</small>
+            </div>
         </div>
+
         <div class="col-md-3">
             <label>Año</label>
-            <input type="number" th:field="*{año}" class="form-control" required>
+            <input type="number" th:field="*{anio}" class="form-control" min="1900" max="2100" required>
+            <div th:if="${#fields.hasErrors('anio')}" class="text-danger">
+                <small th:errors="*{anio}">Error en año</small>
+            </div>
         </div>
+
         <div class="col-md-3">
             <label>Color</label>
             <input type="text" th:field="*{color}" class="form-control" required>
+            <div th:if="${#fields.hasErrors('color')}" class="text-danger">
+                <small th:errors="*{color}">Error en color</small>
+            </div>
         </div>
+
         <div class="col-12">
             <button type="submit" class="btn btn-success">Guardar Vehículo</button>
             <a th:href="@{/admin/clientes}" class="btn btn-secondary">Volver</a>
