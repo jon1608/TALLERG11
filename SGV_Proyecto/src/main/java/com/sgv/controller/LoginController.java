@@ -30,7 +30,7 @@ public class LoginController {
             String rol = usuario.get().getRol();
             switch (rol) {
                 case "ADMIN" -> {
-                    return "redirect:/admin/facturas";
+                    return "redirect:/dashboard";
                 }
                 case "MECANICO" -> {
                     return "redirect:/mecanico";
@@ -48,4 +48,10 @@ public class LoginController {
     public String redirigirRaiz() {
         return "redirect:/login";
     }
+    
+    @GetMapping("/dashboard")
+    public String mostrarDashboard() {
+        return "dashboard";
+    }
+
 }

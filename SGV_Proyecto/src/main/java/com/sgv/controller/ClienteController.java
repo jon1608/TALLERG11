@@ -52,4 +52,6 @@ public class ClienteController {
         clienteService.eliminar(id);
         return "redirect:/admin/clientes";
     }
+    
+
 }
