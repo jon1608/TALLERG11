@@ -20,7 +20,7 @@ public class Vehiculo {
     private String modelo;
 
     @Min(1900)
-    private int año;
+    private int anio;  // ← CAMBIO AQUÍ
 
     @NotBlank
     private String color;
@@ -42,8 +42,8 @@ public class Vehiculo {
     public String getModelo() { return modelo; }
     public void setModelo(String modelo) { this.modelo = modelo; }
 
-    public int getAño() { return año; }
-    public void setAño(int año) { this.año = año; }
+    public int getAnio() { return anio; }  // ← CAMBIO AQUÍ
+    public void setAnio(int anio) { this.anio = anio; }  // ← CAMBIO AQUÍ
 
     public String getColor() { return color; }
     public void setColor(String color) { this.color = color; }

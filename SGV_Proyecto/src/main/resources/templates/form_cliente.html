@@ -7,7 +7,9 @@
 </head>
 <body class="container mt-5">
     <h2>Agregar Cliente</h2>
-    <form th:action="@{/clientes/guardar}" th:object="${cliente}" method="post" class="row g-3">
+
+    <!-- CORREGIDO: Ruta POST correcta -->
+    <form th:action="@{/admin/clientes/guardar}" th:object="${cliente}" method="post" class="row g-3">
 
         <div class="col-md-6">
             <label class="form-label">Nombre Completo</label>
@@ -44,7 +46,9 @@
 
         <div class="col-12">
             <button type="submit" class="btn btn-success">Guardar Cliente</button>
-            <a href="/clientes" class="btn btn-secondary">Cancelar</a>
+
+            <!-- CORREGIDO: Botón cancelar redirige correctamente -->
+            <a href="/admin/clientes" class="btn btn-secondary">Cancelar</a>
         </div>
     </form>
 </body>
