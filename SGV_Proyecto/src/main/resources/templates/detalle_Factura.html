@@ -23,18 +23,9 @@
         </thead>
         <tbody>
             <tr th:each="item, itemStat : ${factura.items}">
-                <td>
-                    <span th:text="${item.descripcion}"></span>
-                    <input type="hidden" th:name="'items[' + ${itemStat.index} + '].descripcion'" th:value="${item.descripcion}" />
-                </td>
-                <td>
-                    <span th:text="${item.cantidad}"></span>
-                    <input type="hidden" th:name="'items[' + ${itemStat.index} + '].cantidad'" th:value="${item.cantidad}" />
-                </td>
-                <td>
-                    <span th:text="${#numbers.formatDecimal(item.precioUnitario, 1, 2)}"></span>
-                    <input type="hidden" th:name="'items[' + ${itemStat.index} + '].precioUnitario'" th:value="${item.precioUnitario}" />
-                </td>
+                <td th:text="${item.descripcion}"></td>
+                <td th:text="${item.cantidad}"></td>
+                <td th:text="${#numbers.formatDecimal(item.precioUnitario, 1, 2)}"></td>
                 <td th:text="${#numbers.formatDecimal(item.cantidad * item.precioUnitario, 1, 2)}"></td>
             </tr>
         </tbody>
@@ -44,12 +35,10 @@
     <p><strong>IVA:</strong> ₡<span th:text="${#numbers.formatDecimal(factura.iva, 1, 2)}"></span></p>
     <p><strong>Total:</strong> ₡<span th:text="${#numbers.formatDecimal(factura.total, 1, 2)}"></span></p>
 
-    <form th:action="@{/admin/facturas/guardar}" method="post" th:object="${factura}">
-        <!-- ✅ Campo oculto del cliente -->
-        <input type="hidden" name="cliente" th:value="${factura.cliente.id}" />
-
-        <button type="submit" class="btn btn-primary">Confirmar y Guardar</button>
-        <a th:href="@{/admin/facturas}" class="btn btn-secondary">Cancelar</a>
-    </form>
+    <!-- ✅ Botones -->
+    <div class="mt-4">
+        <a th:href="@{/menu}" class="btn btn-primary">Volver al Menú</a>
+        <a th:href="@{/admin/facturas}" class="btn btn-secondary">Volver a Facturas</a>
+    </div>
 </body>
 </html>
