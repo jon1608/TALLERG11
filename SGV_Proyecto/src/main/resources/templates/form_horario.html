@@ -9,25 +9,29 @@
 
     <h2 class="mb-3">Registrar Nuevo Horario</h2>
 
-    <form th:action="@{/cliente/horarios/guardar}" th:object="${horario}" method="post" class="row g-3">
+    <!-- Mensaje de error si ya existe -->
+    <div th:if="${error}" class="alert alert-danger">
+        <span th:text="${error}"></span>
+    </div>
+
+    <form th:action="@{/cliente/horarios/guardar}" method="post" th:object="${horario}" class="row g-3">
+        <!-- Fecha -->
         <div class="col-md-6">
             <label class="form-label">Fecha</label>
             <input type="date" class="form-control" th:field="*{fecha}" required>
         </div>
 
+        <!-- Hora -->
         <div class="col-md-6">
             <label class="form-label">Hora</label>
             <input type="time" class="form-control" th:field="*{hora}" required>
         </div>
 
-        <!-- Estado fijo a 'Disponible' -->
-        <input type="hidden" th:field="*{estado}" value="Disponible" />
-
-        <div class="col-12">
-            <button type="submit" class="btn btn-success">Guardar Horario</button>
+        <!-- Botones -->
+        <div class="col-12 mt-4">
+            <button type="submit" class="btn btn-primary">Guardar Horario</button>
             <a th:href="@{/cliente/horarios}" class="btn btn-secondary">Volver</a>
         </div>
     </form>
-
 </body>
 </html>

@@ -12,9 +12,10 @@
     <!-- Mensaje de error (si se usa) -->
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-    <!-- Botón para agregar nuevo horario -->
+    <!-- Botón para agregar nuevo horario y volver al menu -->
     <div class="mb-3">
         <a th:href="@{/cliente/horarios/nueva}" class="btn btn-primary">Nuevo Horario</a>
+        <a th:href="@{/menu}" class="btn btn-secondary ms-2">Volver al Menú Principal</a>
     </div>
 
     <!-- Filtro por fecha -->

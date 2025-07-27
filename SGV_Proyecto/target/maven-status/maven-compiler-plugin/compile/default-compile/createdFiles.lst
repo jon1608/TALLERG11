@@ -15,6 +15,7 @@ com\sgv\service\VehiculoService.class
 com\sgv\model\OrdenReparacion.class
 com\sgv\SgvApplication.class
 com\sgv\controller\LoginController.class
+com\sgv\controller\RedireccionController.class
 com\sgv\service\ClienteService.class
 com\sgv\service\UsuarioService.class
 com\sgv\model\Factura.class

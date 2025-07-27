@@ -20,32 +20,23 @@ public class HorarioDisponibleService {
         return horarioRepo.findAll();
     }
 
-    public List<HorarioDisponible> obtenerPorFecha(LocalDate fecha) {
-        return horarioRepo.findByFecha(fecha);
+    public void guardar(HorarioDisponible horario) {
+        horarioRepo.save(horario);
     }
 
     public boolean existeHorario(LocalDate fecha, LocalTime hora) {
         return horarioRepo.existsByFechaAndHora(fecha, hora);
     }
 
-    public void guardar(HorarioDisponible horario) {
-        horarioRepo.save(horario);
-    }
-
-    public void eliminar(Long id) {
-        horarioRepo.deleteById(id);
+    public List<HorarioDisponible> buscarPorFecha(LocalDate fecha) {
+        return horarioRepo.findByFecha(fecha);
     }
 
     public Optional<HorarioDisponible> obtenerPorId(Long id) {
         return horarioRepo.findById(id);
     }
 
-    public void actualizarEstado(Long id, String nuevoEstado) {
-        Optional<HorarioDisponible> optional = horarioRepo.findById(id);
-        if (optional.isPresent()) {
-            HorarioDisponible horario = optional.get();
-            horario.setEstado(nuevoEstado);
-            horarioRepo.save(horario);
-        }
+    public void eliminar(Long id) {
+        horarioRepo.deleteById(id);
     }
 }
