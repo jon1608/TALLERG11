@@ -11,8 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/admin/facturas")
 public class FacturaController {
@@ -26,23 +24,21 @@ public class FacturaController {
     @GetMapping
     public String listarFacturas(Model model) {
         model.addAttribute("facturas", facturaService.obtenerTodas());
-        return "facturas"; // ✅ ahora busca templates/facturas.html
+        return "facturas"; // busca templates/facturas.html
     }
-
 
     @GetMapping("/nueva")
     public String nuevaFactura(Model model) {
         Factura factura = new Factura();
 
-        // Ya no lanza error porque items está inicializado
+        // Inicializar con un ítem para el formulario
         ItemFactura itemInicial = new ItemFactura();
         factura.getItems().add(itemInicial);
 
         model.addAttribute("factura", factura);
         model.addAttribute("clientes", clienteService.obtenerTodos());
-        return "form_factura"; // Asegúrate de tener esta vista
+        return "form_factura";
     }
-
 
     @PostMapping("/guardar")
     public String guardarFactura(@ModelAttribute("factura") Factura factura) {
@@ -53,7 +49,6 @@ public class FacturaController {
             }
         }
 
-        // Calcular totales ANTES de guardar
         double subtotal = 0;
         for (ItemFactura item : factura.getItems()) {
             subtotal += item.getCantidad() * item.getPrecioUnitario();
@@ -69,9 +64,14 @@ public class FacturaController {
         return "redirect:/admin/facturas";
     }
 
-
     @PostMapping("/preview")
     public String vistaPreviaFactura(@ModelAttribute("factura") Factura factura, Model model) {
+
+        // 🔧 Cargar el cliente completo si el ID está presente
+        if (factura.getCliente() != null && factura.getCliente().getId() != null) {
+            Cliente clienteCompleto = clienteService.obtenerPorId(factura.getCliente().getId()).orElse(null);
+            factura.setCliente(clienteCompleto);
+        }
 
         if (factura.getItems() != null) {
             for (ItemFactura item : factura.getItems()) {
@@ -79,7 +79,6 @@ public class FacturaController {
             }
         }
 
-        // Calcular los totales antes de mostrar
         double subtotal = 0;
         for (ItemFactura item : factura.getItems()) {
             subtotal += item.getCantidad() * item.getPrecioUnitario();
@@ -92,8 +91,9 @@ public class FacturaController {
         factura.setTotal(total);
 
         model.addAttribute("factura", factura);
-        return "facturas/preview_factura";
+        return "detalle_Factura";
     }
+
 
     @GetMapping("/eliminar/{id}")
     public String eliminarFactura(@PathVariable Long id) {
