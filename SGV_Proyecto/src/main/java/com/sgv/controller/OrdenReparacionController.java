@@ -29,13 +29,16 @@ public class OrdenReparacionController {
 
     @GetMapping("/nueva")
     public String mostrarFormularioNueva(Model model) {
-        model.addAttribute("orden", new OrdenReparacion());
+        OrdenReparacion orden = new OrdenReparacion();
+        orden.setCliente(new Cliente()); // ← PREVENCIÓN DEL ERROR de cliente.id == null
+        model.addAttribute("orden", orden);
         model.addAttribute("clientes", clienteService.obtenerTodos());
         return "form_orden";
     }
 
     @PostMapping("/guardar")
-    public String guardarOrden(@Valid @ModelAttribute OrdenReparacion orden, BindingResult result, Model model) {
+    public String guardarOrden(@Valid @ModelAttribute("orden") OrdenReparacion orden,
+                               BindingResult result, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("clientes", clienteService.obtenerTodos());
             return "form_orden";

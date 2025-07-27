@@ -13,13 +13,15 @@ public class OrdenReparacion {
 
     private LocalDate fecha = LocalDate.now();
 
-    @NotBlank
-    private String estado; // En Proceso, Completado, etc.
+    @NotBlank(message = "El estado es obligatorio")
+    private String estado;
 
-    @NotBlank
+    @NotBlank(message = "La descripción es obligatoria")
     private String descripcion;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cliente_id", nullable = false)
+    @NotNull(message = "Debe seleccionar un cliente")
     private Cliente cliente;
 
     // Getters y setters
