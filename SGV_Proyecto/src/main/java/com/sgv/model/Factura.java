@@ -20,7 +20,7 @@ public class Factura {
     @ManyToOne
     private Cliente cliente;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemFactura> items;
 
     // Getters y setters
@@ -43,5 +43,13 @@ public class Factura {
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
 
     public List<ItemFactura> getItems() { return items; }
-    public void setItems(List<ItemFactura> items) { this.items = items; }
+    public void setItems(List<ItemFactura> items) {
+        this.items = items;
+        // Vincular cada item a esta factura (muy importante para persistencia correcta)
+        if (items != null) {
+            for (ItemFactura item : items) {
+                item.setFactura(this);
+            }
+        }
+    }
 }

@@ -14,6 +14,10 @@ public class ItemFactura {
     private double precioUnitario;
     private double total;
 
+    @ManyToOne
+    @JoinColumn(name = "factura_id")
+    private Factura factura;
+
     // Getters y setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -29,4 +33,7 @@ public class ItemFactura {
 
     public double getTotal() { return total; }
     public void setTotal(double total) { this.total = total; }
+
+    public Factura getFactura() { return factura; }
+    public void setFactura(Factura factura) { this.factura = factura; }
 }

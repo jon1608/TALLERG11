@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FacturaService {
@@ -16,6 +17,10 @@ public class FacturaService {
 
     public List<Factura> obtenerTodas() {
         return facturaRepository.findAll();
+    }
+
+    public Optional<Factura> obtenerPorId(Long id) {
+        return facturaRepository.findById(id);
     }
 
     public void guardar(Factura factura) {

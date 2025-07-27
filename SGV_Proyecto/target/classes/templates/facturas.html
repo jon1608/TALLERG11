@@ -1,22 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>Facturas</title></head>
-<body>
-<h2>Facturas Generadas</h2>
-<a th:href="@{/admin/facturas/nueva}">Nueva Factura</a>
-<table border="1">
-    <tr>
-        <th>ID</th><th>Fecha</th><th>Cliente</th><th>Subtotal</th><th>IVA</th><th>Total</th><th>Acciones</th>
-    </tr>
-    <tr th:each="factura : ${facturas}">
-        <td th:text="${factura.id}"></td>
-        <td th:text="${factura.fecha}"></td>
-        <td th:text="${factura.cliente.nombreCompleto}"></td>
-        <td th:text="${factura.subtotal}"></td>
-        <td th:text="${factura.iva}"></td>
-        <td th:text="${factura.total}"></td>
-        <td><a th:href="@{/admin/facturas/eliminar/{id}(id=${factura.id})}">Eliminar</a></td>
-    </tr>
-</table>
+<head>
+    <meta charset="UTF-8">
+    <title>Facturas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-5">
+    <h2 class="mb-4">Facturas Generadas</h2>
+
+    <!-- Botones -->
+    <a th:href="@{/menu}" class="btn btn-secondary mb-3">Volver al Menú Principal</a>
+    <a th:href="@{/admin/facturas/nueva}" class="btn btn-success mb-3">Nueva Factura</a>
+
+    <!-- Tabla -->
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Subtotal</th>
+                <th>IVA</th>
+                <th>Total</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="factura : ${facturas}">
+                <td th:text="${factura.id}">1</td>
+                <td th:text="${factura.fecha}">2025-07-26</td>
+                <td th:text="${factura.cliente.nombreCompleto}">Cliente</td>
+                <td th:text="${#numbers.formatDecimal(factura.subtotal, 1, 'POINT', 2, 'NONE')}">₡0.00</td>
+                <td th:text="${#numbers.formatDecimal(factura.iva, 1, 'POINT', 2, 'NONE')}">₡0.00</td>
+                <td th:text="${#numbers.formatDecimal(factura.total, 1, 'POINT', 2, 'NONE')}">₡0.00</td>
+                <td>
+                    <a th:href="@{/admin/facturas/ver/{id}(id=${factura.id})}" 
+                       class="btn btn-info btn-sm">Ver</a>
+                    <a th:href="@{/admin/facturas/eliminar/{id}(id=${factura.id})}" 
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('¿Deseas eliminar esta factura?')">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>

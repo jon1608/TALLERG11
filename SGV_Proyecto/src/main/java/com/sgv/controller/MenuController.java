@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.sgv.controller;
 
 import org.springframework.stereotype.Controller;
@@ -12,6 +8,11 @@ public class MenuController {
 
     @GetMapping("/menu")
     public String mostrarMenu() {
-        return "dashboard"; // Nombre del HTML (ver siguiente paso)
+        return "dashboard"; // Nombre del HTML
+    }
+
+    @GetMapping("/facturar")
+    public String redirigirAFacturas() {
+        return "redirect:/admin/facturas";
     }
 }

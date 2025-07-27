@@ -1,24 +1,110 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>Formulario Factura</title></head>
-<body>
-<h2>Nueva Factura</h2>
-<form th:action="@{/admin/facturas/guardar}" th:object="${factura}" method="post">
-    Cliente:
-    <select th:field="*{cliente}">
-        <option th:each="cliente : ${clientes}" th:value="${cliente}" th:text="${cliente.nombreCompleto}">Cliente</option>
-    </select><br><br>
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Factura</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
 
-    <h3>Ítems</h3>
-    <div th:each="item, iterStat : *{items}">
-        Descripción: <input type="text" th:field="*{items[__${iterStat.index}__].descripcion}"><br>
-        Cantidad: <input type="number" th:field="*{items[__${iterStat.index}__].cantidad}"><br>
-        Precio Unitario: <input type="number" step="0.01" th:field="*{items[__${iterStat.index}__].precioUnitario}"><br>
-        <br>
-    </div>
+    <h2 class="mb-3">Nueva Factura</h2>
 
-    <button type="submit">Guardar</button>
-</form>
-<a th:href="@{/admin/facturas}">Volver</a>
+    <form th:action="@{/admin/facturas/guardar}" th:object="${factura}" method="post" class="row g-3">
+
+        <!-- Cliente -->
+        <div class="col-md-6">
+            <label class="form-label">Cliente</label>
+            <select th:field="*{cliente}" name="cliente" class="form-select" required>
+                <option value="" disabled selected>Seleccione un cliente</option>
+                <option th:each="cliente : ${clientes}" 
+                        th:value="${cliente.id}" 
+                        th:text="${cliente.nombreCompleto}">
+                </option>
+            </select>
+        </div>
+
+        <!-- Ítems -->
+        <div class="col-12 mt-4">
+            <h4>Ítems de la Factura</h4>
+        </div>
+
+        <div id="items-container" class="col-12">
+            <div class="row mb-3" th:each="item, iterStat : *{items}">
+                <div class="col-md-4">
+                    <label class="form-label">Descripción</label>
+                    <input type="text" th:field="*{items[__${iterStat.index}__].descripcion}" class="form-control" required />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Cantidad</label>
+                    <input type="number" th:field="*{items[__${iterStat.index}__].cantidad}" class="form-control cantidad" min="1" required />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Precio Unitario</label>
+                    <input type="number" step="0.01" th:field="*{items[__${iterStat.index}__].precioUnitario}" class="form-control precio" required />
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón para agregar más ítems -->
+        <div class="col-12">
+            <button type="button" class="btn btn-info" onclick="agregarItem()">Agregar Ítem</button>
+        </div>
+
+        <!-- Totales -->
+        <div class="col-12 mt-4">
+            <h5>Totales</h5>
+            <p><strong>Subtotal:</strong> ₡<span id="subtotal">0.00</span></p>
+            <p><strong>IVA (13%):</strong> ₡<span id="iva">0.00</span></p>
+            <p><strong>Total:</strong> ₡<span id="total">0.00</span></p>
+        </div>
+
+        <!-- Botones -->
+        <div class="col-12">
+            <button type="submit" class="btn btn-success">Guardar Factura</button>
+            <a th:href="@{/admin/facturas}" class="btn btn-secondary">Volver</a>
+            <button type="submit" formaction="/admin/facturas/preview" formmethod="post" class="btn btn-primary ms-2">Vista Previa</button>
+        </div>
+    </form>
+
+    <!-- Scripts -->
+    <script>
+        function agregarItem() {
+            const container = document.getElementById('items-container');
+            const index = container.querySelectorAll('.row').length;
+            const div = document.createElement('div');
+            div.className = 'row mb-3';
+            div.innerHTML = `
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="items[${index}].descripcion" placeholder="Descripción" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control cantidad" name="items[${index}].cantidad" placeholder="Cantidad" min="1" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control precio" name="items[${index}].precioUnitario" placeholder="Precio Unitario" step="0.01" required>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        document.addEventListener("input", () => {
+            const cantidades = document.querySelectorAll(".cantidad");
+            const precios = document.querySelectorAll(".precio");
+
+            let subtotal = 0;
+            for (let i = 0; i < cantidades.length; i++) {
+                const cantidad = parseFloat(cantidades[i].value) || 0;
+                const precio = parseFloat(precios[i].value) || 0;
+                subtotal += cantidad * precio;
+            }
+
+            const iva = subtotal * 0.13;
+            const total = subtotal + iva;
+
+            document.getElementById("subtotal").innerText = subtotal.toFixed(2);
+            document.getElementById("iva").innerText = iva.toFixed(2);
+            document.getElementById("total").innerText = total.toFixed(2);
+        });
+    </script>
 </body>
 </html>
