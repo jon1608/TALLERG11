@@ -1,5 +1,6 @@
 package com.sgv.model;
 
+import com.sgv.model.Factura;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,7 +13,6 @@ public class ItemFactura {
     private String descripcion;
     private int cantidad;
     private double precioUnitario;
-    private double total;
 
     @ManyToOne
     @JoinColumn(name = "factura_id")
@@ -31,9 +31,12 @@ public class ItemFactura {
     public double getPrecioUnitario() { return precioUnitario; }
     public void setPrecioUnitario(double precioUnitario) { this.precioUnitario = precioUnitario; }
 
-    public double getTotal() { return total; }
-    public void setTotal(double total) { this.total = total; }
-
     public Factura getFactura() { return factura; }
     public void setFactura(Factura factura) { this.factura = factura; }
+
+    // Total calculado (no se guarda en la base de datos)
+    @Transient
+    public double getTotal() {
+        return cantidad * precioUnitario;
+    }
 }

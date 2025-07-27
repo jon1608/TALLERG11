@@ -14,7 +14,7 @@
         <!-- Cliente -->
         <div class="col-md-6">
             <label class="form-label">Cliente</label>
-            <select th:field="*{cliente}" name="cliente" class="form-select" required>
+            <select th:field="*{cliente}" class="form-select" required>
                 <option value="" disabled selected>Seleccione un cliente</option>
                 <option th:each="cliente : ${clientes}" 
                         th:value="${cliente.id}" 

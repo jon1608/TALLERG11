@@ -5,6 +5,7 @@ import com.sgv.model.ItemFactura;
 import com.sgv.model.Cliente;
 import com.sgv.service.ClienteService;
 import com.sgv.service.FacturaService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,8 +43,13 @@ public class FacturaController {
 
     @PostMapping("/guardar")
     public String guardarFactura(@ModelAttribute Factura factura, @RequestParam("cliente") Long clienteId) {
+        // Asignar el cliente completo desde su ID
         Cliente cliente = clienteService.obtenerPorId(clienteId).orElse(null);
         factura.setCliente(cliente);
+
+        if (factura.getItems() == null) {
+            factura.setItems(new ArrayList<>());
+        }
 
         double subtotal = factura.getItems().stream()
                 .mapToDouble(item -> item.getCantidad() * item.getPrecioUnitario())
@@ -60,11 +66,14 @@ public class FacturaController {
     }
 
     @PostMapping("/preview")
-    public String vistaPreviaFactura(@ModelAttribute Factura factura, 
-                                     @RequestParam("cliente") Long clienteId,
-                                     Model model) {
+    public String vistaPreviaFactura(@ModelAttribute Factura factura, @RequestParam("cliente") Long clienteId, Model model) {
+        // Asignar cliente también en vista previa
         Cliente cliente = clienteService.obtenerPorId(clienteId).orElse(null);
         factura.setCliente(cliente);
+
+        if (factura.getItems() == null) {
+            factura.setItems(new ArrayList<>());
+        }
 
         double subtotal = factura.getItems().stream()
                 .mapToDouble(item -> item.getCantidad() * item.getPrecioUnitario())

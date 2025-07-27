@@ -3,6 +3,8 @@ package com.sgv.model;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
+import com.sgv.model.Cliente;
+
 
 @Entity
 public class Factura {
