@@ -2,9 +2,8 @@ package com.sgv.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import com.sgv.model.Cliente;
-
 
 @Entity
 public class Factura {
@@ -23,7 +22,7 @@ public class Factura {
     private Cliente cliente;
 
     @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemFactura> items;
+    private List<ItemFactura> items = new ArrayList<>(); // 👈 ¡AQUÍ ESTÁ LA CLAVE!
 
     // Getters y setters
     public Long getId() { return id; }
@@ -47,7 +46,6 @@ public class Factura {
     public List<ItemFactura> getItems() { return items; }
     public void setItems(List<ItemFactura> items) {
         this.items = items;
-        // Vincular cada item a esta factura (muy importante para persistencia correcta)
         if (items != null) {
             for (ItemFactura item : items) {
                 item.setFactura(this);

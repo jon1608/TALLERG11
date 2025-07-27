@@ -24,11 +24,13 @@ public class FacturaService {
     }
 
     public void guardar(Factura factura) {
+        System.out.println("Calculando totales de factura: " + factura.getItems().size() + " items");
+
         double subtotal = 0;
         for (ItemFactura item : factura.getItems()) {
+            System.out.println("Item: " + item.getDescripcion() + ", cantidad: " + item.getCantidad() + ", precio: " + item.getPrecioUnitario());
             double totalItem = item.getCantidad() * item.getPrecioUnitario();
             subtotal += totalItem;
-            // No se necesita setTotal porque es calculado
         }
 
         double iva = subtotal * 0.13;
@@ -40,6 +42,7 @@ public class FacturaService {
 
         facturaRepository.save(factura);
     }
+
 
 
     public void eliminar(Long id) {

@@ -30,9 +30,12 @@
                 <td th:text="${factura.id}">1</td>
                 <td th:text="${factura.fecha}">2025-07-26</td>
                 <td th:text="${factura.cliente.nombreCompleto}">Cliente</td>
-                <td th:text="${#numbers.formatDecimal(factura.subtotal, 1, 'POINT', 2, 'NONE')}">₡0.00</td>
-                <td th:text="${#numbers.formatDecimal(factura.iva, 1, 'POINT', 2, 'NONE')}">₡0.00</td>
-                <td th:text="${#numbers.formatDecimal(factura.total, 1, 'POINT', 2, 'NONE')}">₡0.00</td>
+                <td th:text="${#numbers.formatDecimal(factura.subtotal, 1, 2)}">₡0.00</td>
+                <td th:text="${#numbers.formatDecimal(factura.iva, 1, 2)}">₡0.00</td>
+                <td th:text="${#numbers.formatDecimal(factura.total, 1, 2)}">₡0.00</td>
+
+
+
                 <td>
                     <a th:href="@{/admin/facturas/ver/{id}(id=${factura.id})}" 
                        class="btn btn-info btn-sm">Ver</a>

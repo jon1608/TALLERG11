@@ -9,12 +9,11 @@
 
     <h2 class="mb-3">Nueva Factura</h2>
 
-    <form th:action="@{/admin/facturas/guardar}" th:object="${factura}" method="post" class="row g-3">
-
+    <form id="form-factura" th:action="@{/admin/facturas/guardar}" method="post" class="row g-3">
         <!-- Cliente -->
         <div class="col-md-6">
             <label class="form-label">Cliente</label>
-            <select th:field="*{cliente}" class="form-select" required>
+            <select name="cliente.id" class="form-select" required>
                 <option value="" disabled selected>Seleccione un cliente</option>
                 <option th:each="cliente : ${clientes}" 
                         th:value="${cliente.id}" 
@@ -29,23 +28,23 @@
         </div>
 
         <div id="items-container" class="col-12">
-            <div class="row mb-3" th:each="item, iterStat : *{items}">
+            <div class="row mb-3">
                 <div class="col-md-4">
                     <label class="form-label">Descripción</label>
-                    <input type="text" th:field="*{items[__${iterStat.index}__].descripcion}" class="form-control" required />
+                    <input type="text" class="form-control" name="items[0].descripcion" required>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Cantidad</label>
-                    <input type="number" th:field="*{items[__${iterStat.index}__].cantidad}" class="form-control cantidad" min="1" required />
+                    <input type="number" class="form-control cantidad" name="items[0].cantidad" min="1" required>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Precio Unitario</label>
-                    <input type="number" step="0.01" th:field="*{items[__${iterStat.index}__].precioUnitario}" class="form-control precio" required />
+                    <input type="number" class="form-control precio" name="items[0].precioUnitario" step="0.01" required>
                 </div>
             </div>
         </div>
 
-        <!-- Botón para agregar más ítems -->
+        <!-- Botón para agregar ítem -->
         <div class="col-12">
             <button type="button" class="btn btn-info" onclick="agregarItem()">Agregar Ítem</button>
         </div>
@@ -62,31 +61,42 @@
         <div class="col-12">
             <button type="submit" class="btn btn-success">Guardar Factura</button>
             <a th:href="@{/admin/facturas}" class="btn btn-secondary">Volver</a>
-            <button type="submit" formaction="/admin/facturas/preview" formmethod="post" class="btn btn-primary ms-2">Vista Previa</button>
+            <button type="button" class="btn btn-primary ms-2" onclick="vistaPrevia()">Vista Previa</button>
         </div>
     </form>
 
     <!-- Scripts -->
     <script>
+        let index = 1;
+
         function agregarItem() {
             const container = document.getElementById('items-container');
-            const index = container.querySelectorAll('.row').length;
             const div = document.createElement('div');
             div.className = 'row mb-3';
             div.innerHTML = `
                 <div class="col-md-4">
-                    <input type="text" class="form-control" name="items[${index}].descripcion" placeholder="Descripción" required>
+                    <input type="text" class="form-control" name="items[${index}].descripcion" required>
                 </div>
                 <div class="col-md-2">
-                    <input type="number" class="form-control cantidad" name="items[${index}].cantidad" placeholder="Cantidad" min="1" required>
+                    <input type="number" class="form-control cantidad" name="items[${index}].cantidad" min="1" required>
                 </div>
                 <div class="col-md-2">
-                    <input type="number" class="form-control precio" name="items[${index}].precioUnitario" placeholder="Precio Unitario" step="0.01" required>
+                    <input type="number" class="form-control precio" name="items[${index}].precioUnitario" step="0.01" required>
                 </div>
             `;
             container.appendChild(div);
+            index++;
         }
 
+        // Vista Previa con cambio de acción temporal
+        function vistaPrevia() {
+            const form = document.getElementById("form-factura");
+            form.action = "/admin/facturas/preview";
+            form.method = "post";
+            form.submit();
+        }
+
+        // Cálculo de totales dinámico
         document.addEventListener("input", () => {
             const cantidades = document.querySelectorAll(".cantidad");
             const precios = document.querySelectorAll(".precio");

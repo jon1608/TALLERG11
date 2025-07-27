@@ -1,17 +1,17 @@
 package com.sgv.controller;
 
+import com.sgv.model.Cliente;
 import com.sgv.model.Factura;
 import com.sgv.model.ItemFactura;
-import com.sgv.model.Cliente;
 import com.sgv.service.ClienteService;
 import com.sgv.service.FacturaService;
-
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/facturas")
@@ -26,34 +26,38 @@ public class FacturaController {
     @GetMapping
     public String listarFacturas(Model model) {
         model.addAttribute("facturas", facturaService.obtenerTodas());
-        return "facturas";
+        return "facturas"; // ✅ ahora busca templates/facturas.html
     }
 
+
     @GetMapping("/nueva")
-    public String mostrarFormularioNueva(Model model) {
+    public String nuevaFactura(Model model) {
         Factura factura = new Factura();
-        factura.setItems(new ArrayList<>());
-        factura.getItems().add(new ItemFactura());
-        factura.getItems().add(new ItemFactura());
+
+        // Ya no lanza error porque items está inicializado
+        ItemFactura itemInicial = new ItemFactura();
+        factura.getItems().add(itemInicial);
 
         model.addAttribute("factura", factura);
         model.addAttribute("clientes", clienteService.obtenerTodos());
-        return "form_factura";
+        return "form_factura"; // Asegúrate de tener esta vista
     }
 
-    @PostMapping("/guardar")
-    public String guardarFactura(@ModelAttribute Factura factura, @RequestParam("cliente") Long clienteId) {
-        // Asignar el cliente completo desde su ID
-        Cliente cliente = clienteService.obtenerPorId(clienteId).orElse(null);
-        factura.setCliente(cliente);
 
-        if (factura.getItems() == null) {
-            factura.setItems(new ArrayList<>());
+    @PostMapping("/guardar")
+    public String guardarFactura(@ModelAttribute("factura") Factura factura) {
+
+        if (factura.getItems() != null) {
+            for (ItemFactura item : factura.getItems()) {
+                item.setFactura(factura);
+            }
         }
 
-        double subtotal = factura.getItems().stream()
-                .mapToDouble(item -> item.getCantidad() * item.getPrecioUnitario())
-                .sum();
+        // Calcular totales ANTES de guardar
+        double subtotal = 0;
+        for (ItemFactura item : factura.getItems()) {
+            subtotal += item.getCantidad() * item.getPrecioUnitario();
+        }
         double iva = subtotal * 0.13;
         double total = subtotal + iva;
 
@@ -65,19 +69,21 @@ public class FacturaController {
         return "redirect:/admin/facturas";
     }
 
-    @PostMapping("/preview")
-    public String vistaPreviaFactura(@ModelAttribute Factura factura, @RequestParam("cliente") Long clienteId, Model model) {
-        // Asignar cliente también en vista previa
-        Cliente cliente = clienteService.obtenerPorId(clienteId).orElse(null);
-        factura.setCliente(cliente);
 
-        if (factura.getItems() == null) {
-            factura.setItems(new ArrayList<>());
+    @PostMapping("/preview")
+    public String vistaPreviaFactura(@ModelAttribute("factura") Factura factura, Model model) {
+
+        if (factura.getItems() != null) {
+            for (ItemFactura item : factura.getItems()) {
+                item.setFactura(factura);
+            }
         }
 
-        double subtotal = factura.getItems().stream()
-                .mapToDouble(item -> item.getCantidad() * item.getPrecioUnitario())
-                .sum();
+        // Calcular los totales antes de mostrar
+        double subtotal = 0;
+        for (ItemFactura item : factura.getItems()) {
+            subtotal += item.getCantidad() * item.getPrecioUnitario();
+        }
         double iva = subtotal * 0.13;
         double total = subtotal + iva;
 
@@ -86,17 +92,7 @@ public class FacturaController {
         factura.setTotal(total);
 
         model.addAttribute("factura", factura);
-        return "detalle_factura";
-    }
-
-    @GetMapping("/ver/{id}")
-    public String verFactura(@PathVariable Long id, Model model) {
-        Factura factura = facturaService.obtenerPorId(id).orElse(null);
-        if (factura == null) {
-            return "redirect:/admin/facturas";
-        }
-        model.addAttribute("factura", factura);
-        return "detalle_factura";
+        return "facturas/preview_factura";
     }
 
     @GetMapping("/eliminar/{id}")
