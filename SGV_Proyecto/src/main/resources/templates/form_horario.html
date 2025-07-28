@@ -7,31 +7,49 @@
 </head>
 <body class="container mt-4">
 
-    <h2 class="mb-3">Registrar Nuevo Horario</h2>
+<h2 class="mb-3">Registrar / Editar Horario</h2>
 
-    <!-- Mensaje de error si ya existe -->
-    <div th:if="${error}" class="alert alert-danger">
-        <span th:text="${error}"></span>
+<!-- Mensaje de error si ya existe -->
+<div th:if="${error}" class="alert alert-danger">
+    <span th:text="${error}"></span>
+</div>
+
+<form th:action="@{/cliente/horarios/guardar}" method="post" th:object="${horario}" class="row g-3">
+
+    <!-- Campo oculto para ID en caso de edición -->
+    <input type="hidden" th:field="*{id}"/>
+
+    <!-- Fecha -->
+    <div class="col-md-4">
+        <label class="form-label">Fecha</label>
+        <input type="date" class="form-control" th:field="*{fecha}" required>
     </div>
 
-    <form th:action="@{/cliente/horarios/guardar}" method="post" th:object="${horario}" class="row g-3">
-        <!-- Fecha -->
-        <div class="col-md-6">
-            <label class="form-label">Fecha</label>
-            <input type="date" class="form-control" th:field="*{fecha}" required>
-        </div>
+    <!-- Hora -->
+    <div class="col-md-4">
+        <label class="form-label">Hora</label>
+        <input type="time" class="form-control" th:field="*{hora}" required>
+    </div>
 
-        <!-- Hora -->
-        <div class="col-md-6">
-            <label class="form-label">Hora</label>
-            <input type="time" class="form-control" th:field="*{hora}" required>
-        </div>
+    <!-- Cliente -->
+    <div class="col-md-4">
+        <label class="form-label">Cliente</label>
+        <select class="form-select" th:field="*{cliente}" required>
+            <option value="">Seleccione un cliente</option>
+            <option th:each="c : ${clientes}" 
+                    th:value="${c.id}" 
+                    th:text="${c.nombreCompleto}"
+                    th:selected="${c.id} == ${horario.cliente?.id}">
+            </option>
+        </select>
+    </div>
 
-        <!-- Botones -->
-        <div class="col-12 mt-4">
-            <button type="submit" class="btn btn-primary">Guardar Horario</button>
-            <a th:href="@{/cliente/horarios}" class="btn btn-secondary">Volver</a>
-        </div>
-    </form>
+    <!-- Botones -->
+    <div class="col-12 mt-4">
+        <button type="submit" class="btn btn-primary">Guardar Horario</button>
+        <a th:href="@{/cliente/horarios}" class="btn btn-secondary">Volver</a>
+    </div>
+
+</form>
 </body>
 </html>
