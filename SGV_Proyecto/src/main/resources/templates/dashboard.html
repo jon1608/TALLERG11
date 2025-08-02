@@ -5,32 +5,153 @@
     <title>Menú Principal - SGV</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a2e8c3c78c.js" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            background-color: #F9FAFB;
+            color: #1F2937;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            transition: 0.3s ease;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar {
+            background-color: #E5E7EB;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+        }
+
+        .navbar-nav .nav-link {
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            color: #1F2937 !important;
+        }
+
+        .navbar-nav .nav-link:hover {
+            background-color: #d1d5db;
+            border-radius: 5px;
+            padding: 5px 10px;
+            color: #111827 !important;
+        }
+
+        .navbar-brand i {
+            margin-right: 6px;
+        }
+
+        .bg-footer {
+            background-color: #E5E7EB;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+        }
+
+        .card-header.bg-primary {
+            background-color: #3B82F6 !important;
+        }
+
+        .card.border-primary {
+            border-color: #3B82F6 !important;
+        }
+
+        .card-header.bg-success {
+            background-color: #10B981 !important;
+        }
+
+        .card.border-success {
+            border-color: #10B981 !important;
+        }
+
+        .card-header.bg-secondary {
+            background-color: #6B7280 !important;
+        }
+
+        .card.border-secondary {
+            border-color: #6B7280 !important;
+        }
+    </style>
 </head>
-<body class="bg-light">
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Bienvenido al Sistema de Gestión de Vehículos</h2>
-    <div class="row justify-content-center">
-        <div class="col-md-3">
-            <a href="/admin/clientes" class="btn btn-outline-primary w-100 mb-3">
-                <i class="fas fa-users"></i> Gestión de Clientes
-            </a>
-        </div>
-        <div class="col-md-3">
-            <a href="/mecanico/ordenes" class="btn btn-outline-success w-100 mb-3">
-                <i class="fas fa-tools"></i> Orden e Historial de Reparación
-            </a>
-        </div>
-        <div class="col-md-3">
-            <a href="/facturar" class="btn btn-outline-warning w-100 mb-3">
-                <i class="fas fa-file-invoice-dollar"></i> Facturar
-            </a>
-        </div>
-        <div class="col-md-3">
-            <a href="/citas" class="btn btn-outline-info w-100 mb-3">
-                <i class="fas fa-calendar-alt"></i> Horario Disponible
-            </a>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold fs-4 text-primary" href="/menu">
+            <i class="fas fa-car-side"></i> SGV
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav fs-5">
+                <li class="nav-item"><a class="nav-link" href="/admin/clientes"><i class="fas fa-users"></i> Clientes</a></li>
+                <li class="nav-item"><a class="nav-link" href="/mecanico/ordenes"><i class="fas fa-tools"></i> Órdenes</a></li>
+                <li class="nav-item"><a class="nav-link" href="/facturar"><i class="fas fa-file-invoice-dollar"></i> Facturar</a></li>
+                <li class="nav-item"><a class="nav-link" href="/citas"><i class="fas fa-calendar-alt"></i> Horarios</a></li>
+            </ul>
         </div>
     </div>
-</div>
+</nav>
+
+<!-- Contenido principal -->
+<main class="container mt-5 flex-grow-1">
+    <h2 class="text-center mb-4">Bienvenido al Sistema de Gestión de Vehículos</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white fw-bold">
+                    <i class="fas fa-bullseye"></i> Misión
+                </div>
+                <div class="card-body">
+                    <p>Brindar un sistema integral de gestión de vehículos que optimice los procesos de reparación, atención al cliente y administración de horarios.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white fw-bold">
+                    <i class="fas fa-eye"></i> Visión
+                </div>
+                <div class="card-body">
+                    <p>Ser la solución preferida por talleres y centros de servicio gracias a la eficiencia, simplicidad y confiabilidad de nuestra plataforma.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4 mb-5">
+        <div class="col">
+            <div class="card border-secondary">
+                <div class="card-header bg-secondary text-white fw-bold">
+                    <i class="fas fa-info-circle"></i> Sobre el Sistema
+                </div>
+                <div class="card-body">
+                    <p>El Sistema de Gestión de Vehículos (SGV) permite administrar de forma eficiente la información de los clientes, vehículos, órdenes de reparación, facturación y citas disponibles. Diseñado para facilitar el trabajo diario en talleres mecánicos y centros de servicio, el SGV mejora la organización interna y la atención al cliente.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer mt-auto py-3 bg-footer text-center text-muted small">
+    <hr class="mt-0 mb-2">
+    <p class="mb-0">&copy; Universidad Fidélitas 2025 Sistema de Gestión de Vehículos (SGV) | Desarrollado por Jonathan Umaña y Skarleth Centeno | v1.0</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
