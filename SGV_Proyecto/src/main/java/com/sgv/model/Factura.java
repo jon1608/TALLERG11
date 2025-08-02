@@ -19,10 +19,11 @@ public class Factura {
     private double total;
 
     @ManyToOne
+    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
     @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemFactura> items = new ArrayList<>(); // 👈 ¡AQUÍ ESTÁ LA CLAVE!
+    private List<ItemFactura> items = new ArrayList<>();
 
     // Getters y setters
     public Long getId() { return id; }

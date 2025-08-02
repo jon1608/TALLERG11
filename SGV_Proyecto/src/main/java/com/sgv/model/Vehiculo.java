@@ -29,9 +29,10 @@ public class Vehiculo {
     private String color;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
+   
     // Constructor vacío
     public Vehiculo() {}
 

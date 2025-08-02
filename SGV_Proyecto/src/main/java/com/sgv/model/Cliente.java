@@ -2,6 +2,7 @@ package com.sgv.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import java.util.List;
 
 @Entity
 public class Cliente {
@@ -30,6 +31,12 @@ public class Cliente {
     @NotBlank
     private String estadoCliente; // Activo o Inactivo
 
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Factura> facturas;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Vehiculo> vehiculos;
+
     // Getters y setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -51,4 +58,10 @@ public class Cliente {
 
     public String getEstadoCliente() { return estadoCliente; }
     public void setEstadoCliente(String estadoCliente) { this.estadoCliente = estadoCliente; }
+
+    public List<Factura> getFacturas() { return facturas; }
+    public void setFacturas(List<Factura> facturas) { this.facturas = facturas; }
+
+    public List<Vehiculo> getVehiculos() { return vehiculos; }
+    public void setVehiculos(List<Vehiculo> vehiculos) { this.vehiculos = vehiculos; }
 }
