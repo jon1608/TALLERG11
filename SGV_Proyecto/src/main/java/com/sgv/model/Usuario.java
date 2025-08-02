@@ -15,9 +15,10 @@ public class Usuario {
     @Email
     @NotBlank
     private String correo;
-
+    
+    
     @NotBlank
-    @Size(min = 8)
+    @Size(min = 1)
     private String contrasena;
 
     @NotBlank
