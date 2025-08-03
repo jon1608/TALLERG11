@@ -1,6 +1,7 @@
 package com.sgv.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +19,21 @@ public class Factura {
     private double iva;
     private double total;
 
-    @ManyToOne
+    @NotNull(message = "Debe seleccionar un cliente")
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
+
+    @NotNull(message = "Debe seleccionar una placa")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vehiculo_id", nullable = false)
+    private Vehiculo vehiculo;
 
     @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemFactura> items = new ArrayList<>();
 
     // Getters y setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -43,6 +51,9 @@ public class Factura {
 
     public Cliente getCliente() { return cliente; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
+
+    public Vehiculo getVehiculo() { return vehiculo; }
+    public void setVehiculo(Vehiculo vehiculo) { this.vehiculo = vehiculo; }
 
     public List<ItemFactura> getItems() { return items; }
     public void setItems(List<ItemFactura> items) {

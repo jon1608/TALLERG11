@@ -1,7 +1,9 @@
 package com.sgv.model;
 
-import com.sgv.model.Factura;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class ItemFactura {
@@ -10,11 +12,17 @@ public class ItemFactura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "La descripción no puede estar vacía")
     private String descripcion;
+
+    @Min(value = 1, message = "La cantidad debe ser al menos 1")
     private int cantidad;
+
+    @Min(value = 0, message = "El precio no puede ser negativo")
     private double precioUnitario;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "factura_id")
     private Factura factura;
 
@@ -34,7 +42,7 @@ public class ItemFactura {
     public Factura getFactura() { return factura; }
     public void setFactura(Factura factura) { this.factura = factura; }
 
-    // Total calculado (no se guarda en la base de datos)
+    // Total calculado (no persistente)
     @Transient
     public double getTotal() {
         return cantidad * precioUnitario;

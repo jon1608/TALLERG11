@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Vehiculo {
@@ -12,27 +13,28 @@ public class Vehiculo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "La placa es obligatoria")
+    @Column(unique = true)
     private String placa;
 
-    @NotBlank
+    @NotBlank(message = "La marca es obligatoria")
     private String marca;
 
-    @NotBlank
+    @NotBlank(message = "El modelo es obligatorio")
     private String modelo;
 
-    @Min(1900)
-    @Max(2100)
+    @Min(value = 1900, message = "El año debe ser mayor a 1900")
+    @Max(value = 2100, message = "El año debe ser menor a 2100")
     private int anio = 2020;
 
-    @NotBlank
+    @NotBlank(message = "El color es obligatorio")
     private String color;
 
-    @ManyToOne
+    @NotNull(message = "El vehículo debe estar asignado a un cliente")
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-   
     // Constructor vacío
     public Vehiculo() {}
 
@@ -57,4 +59,10 @@ public class Vehiculo {
 
     public Cliente getCliente() { return cliente; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
+
+    // Opción útil para mostrar placa y modelo juntos
+    @Transient
+    public String getDescripcionVehiculo() {
+        return placa + " - " + marca + " " + modelo + " (" + anio + ")";
+    }
 }

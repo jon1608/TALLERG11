@@ -10,6 +10,9 @@
 
     <p><strong>Fecha:</strong> <span th:text="${factura.fecha}"></span></p>
     <p><strong>Cliente:</strong> <span th:text="${factura.cliente.nombreCompleto}"></span></p>
+    <p><strong>Placa del Vehículo:</strong>
+        <span th:text="${factura.vehiculo != null ? factura.vehiculo.placa : 'Sin vehículo'}"></span>
+    </p>
 
     <h4>Ítems</h4>
     <table class="table table-bordered">
@@ -22,7 +25,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="item, itemStat : ${factura.items}">
+            <tr th:each="item : ${factura.items}">
                 <td th:text="${item.descripcion}"></td>
                 <td th:text="${item.cantidad}"></td>
                 <td th:text="${#numbers.formatDecimal(item.precioUnitario, 1, 2)}"></td>
@@ -35,7 +38,6 @@
     <p><strong>IVA:</strong> ₡<span th:text="${#numbers.formatDecimal(factura.iva, 1, 2)}"></span></p>
     <p><strong>Total:</strong> ₡<span th:text="${#numbers.formatDecimal(factura.total, 1, 2)}"></span></p>
 
-    <!-- ✅ Botones -->
     <div class="mt-4">
         <a th:href="@{/menu}" class="btn btn-primary">Volver al Menú</a>
         <a th:href="@{/admin/facturas}" class="btn btn-secondary">Volver a Facturas</a>

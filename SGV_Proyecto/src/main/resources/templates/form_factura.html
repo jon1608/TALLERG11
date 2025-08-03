@@ -22,6 +22,18 @@
             </select>
         </div>
 
+        <!-- Vehículo (Placa) -->
+        <div class="col-md-6">
+            <label class="form-label">Vehículo (Placa)</label>
+            <select name="vehiculo.id" class="form-select" required>
+                <option value="" disabled selected>Seleccione una placa</option>
+                <option th:each="vehiculo : ${vehiculos}"
+                        th:value="${vehiculo.id}"
+                        th:text="${vehiculo.placa}">
+                </option>
+            </select>
+        </div>
+
         <!-- Ítems -->
         <div class="col-12 mt-4">
             <h4>Ítems de la Factura</h4>
@@ -88,7 +100,6 @@
             index++;
         }
 
-        // Vista Previa con cambio de acción temporal
         function vistaPrevia() {
             const form = document.getElementById("form-factura");
             form.action = "/admin/facturas/preview";
@@ -96,7 +107,6 @@
             form.submit();
         }
 
-        // Cálculo de totales dinámico
         document.addEventListener("input", () => {
             const cantidades = document.querySelectorAll(".cantidad");
             const precios = document.querySelectorAll(".precio");

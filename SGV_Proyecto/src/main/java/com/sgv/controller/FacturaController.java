@@ -5,6 +5,8 @@ import com.sgv.model.Factura;
 import com.sgv.model.ItemFactura;
 import com.sgv.service.ClienteService;
 import com.sgv.service.FacturaService;
+import com.sgv.service.VehiculoService; 
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,9 @@ public class FacturaController {
     @Autowired
     private ClienteService clienteService;
 
+    @Autowired
+    private VehiculoService vehiculoService; // <-- inyección del servicio de vehículos
+
     @GetMapping
     public String listarFacturas(Model model) {
         model.addAttribute("facturas", facturaService.obtenerTodas());
@@ -30,15 +35,15 @@ public class FacturaController {
     @GetMapping("/nueva")
     public String nuevaFactura(Model model) {
         Factura factura = new Factura();
-
-        // Inicializar con un ítem para el formulario
-        ItemFactura itemInicial = new ItemFactura();
-        factura.getItems().add(itemInicial);
+        factura.getItems().add(new ItemFactura());
 
         model.addAttribute("factura", factura);
         model.addAttribute("clientes", clienteService.obtenerTodos());
+        model.addAttribute("vehiculos", vehiculoService.obtenerTodos()); // <-- AGREGA ESTA LÍNEA
+
         return "form_factura";
     }
+
 
     @PostMapping("/guardar")
     public String guardarFactura(@ModelAttribute("factura") Factura factura) {
@@ -67,18 +72,27 @@ public class FacturaController {
     @PostMapping("/preview")
     public String vistaPreviaFactura(@ModelAttribute("factura") Factura factura, Model model) {
 
-        // 🔧 Cargar el cliente completo si el ID está presente
+        // Cliente
         if (factura.getCliente() != null && factura.getCliente().getId() != null) {
             Cliente clienteCompleto = clienteService.obtenerPorId(factura.getCliente().getId()).orElse(null);
             factura.setCliente(clienteCompleto);
         }
 
+        // Vehículo
+        if (factura.getVehiculo() != null && factura.getVehiculo().getId() != null) {
+            factura.setVehiculo(
+                vehiculoService.obtenerPorId(factura.getVehiculo().getId()).orElse(null)
+            );
+        }
+
+        // Asignar factura a cada ítem
         if (factura.getItems() != null) {
             for (ItemFactura item : factura.getItems()) {
                 item.setFactura(factura);
             }
         }
 
+        // Calcular totales
         double subtotal = 0;
         for (ItemFactura item : factura.getItems()) {
             subtotal += item.getCantidad() * item.getPrecioUnitario();

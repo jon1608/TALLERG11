@@ -11,31 +11,35 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "El nombre completo es obligatorio")
     private String nombreCompleto;
 
-    @NotNull
-    @Positive
+    @NotNull(message = "La cédula es obligatoria")
+    @Positive(message = "La cédula debe ser un número positivo")
+    @Column(unique = true)
     private Long cedula;
 
-    @Email
-    @NotBlank
+    @NotBlank(message = "El correo es obligatorio")
+    @Email(message = "Debe proporcionar un correo válido")
     private String correo;
 
-    @NotBlank
+    @NotBlank(message = "El teléfono es obligatorio")
     private String telefono;
 
-    @NotBlank
+    @NotBlank(message = "La dirección es obligatoria")
     private String direccion;
 
-    @NotBlank
-    private String estadoCliente; // Activo o Inactivo
+    @NotBlank(message = "Debe seleccionar el estado del cliente")
+    private String estadoCliente; // Activo / Inactivo
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Factura> facturas;
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Vehiculo> vehiculos;
+
+    // Constructor vacío
+    public Cliente() {}
 
     // Getters y setters
     public Long getId() { return id; }
@@ -64,4 +68,10 @@ public class Cliente {
 
     public List<Vehiculo> getVehiculos() { return vehiculos; }
     public void setVehiculos(List<Vehiculo> vehiculos) { this.vehiculos = vehiculos; }
+
+    // Utilidad: para mostrar en dropdowns
+    @Transient
+    public String getIdentificacionConNombre() {
+        return cedula + " - " + nombreCompleto;
+    }
 }
