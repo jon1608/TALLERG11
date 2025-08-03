@@ -114,4 +114,14 @@ public class FacturaController {
         facturaService.eliminar(id);
         return "redirect:/admin/facturas";
     }
+    
+    @GetMapping("/ver/{id}")
+    public String verFactura(@PathVariable Long id, Model model) {
+        Factura factura = facturaService.obtenerPorId(id)
+                .orElseThrow(() -> new RuntimeException("Factura no encontrada con ID: " + id));
+
+        model.addAttribute("factura", factura);
+        return "detalle_factura"; // Debe existir el archivo detalle_factura.html en templates
+    }
+
 }

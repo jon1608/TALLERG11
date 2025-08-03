@@ -43,9 +43,7 @@ public class FacturaService {
         facturaRepository.save(factura);
     }
 
-
-
-    public void eliminar(Long id) {
+        public void eliminar(Long id) {
         facturaRepository.deleteById(id);
     }
 }
