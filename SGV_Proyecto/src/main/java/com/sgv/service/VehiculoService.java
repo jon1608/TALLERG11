@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.sgv.service;
 
-/**
- *
- * @author Jonathan Umaña R
- */
 import com.sgv.model.Vehiculo;
 import com.sgv.repository.VehiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +13,10 @@ public class VehiculoService {
 
     @Autowired
     private VehiculoRepository vehiculoRepository;
+
+    public List<Vehiculo> obtenerTodos() {
+        return vehiculoRepository.findAll();
+    }
 
     public List<Vehiculo> obtenerPorClienteId(Long clienteId) {
         return vehiculoRepository.findByClienteId(clienteId);

@@ -1,0 +1,11 @@
+{
+    "elements": {},
+    "attributes": {
+        "th:field": {
+            "context": "select"
+        },
+        "th:selected": {
+            "context": "option"
+        }
+    }
+}

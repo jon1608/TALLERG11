@@ -11,24 +11,44 @@
 
     <!-- Botón volver al menú -->
     <a th:href="@{/menu}" class="btn btn-secondary mb-3">Volver al Menú Principal</a>
+
     <!-- Botón volver a listado -->
     <a th:href="@{/mecanico/ordenes}" class="btn btn-outline-primary mb-3">Volver a Listado</a>
 
     <form th:action="@{/mecanico/ordenes/guardar}" th:object="${orden}" method="post" class="row g-3">
-        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{id}" />
 
         <div class="col-md-6">
             <label class="form-label">Estado</label>
-            <input type="text" th:field="*{estado}" class="form-control" required/>
+            <input type="text" th:field="*{estado}" class="form-control" required />
         </div>
 
         <div class="col-md-6">
             <label class="form-label">Cliente</label>
             <select th:field="*{cliente.id}" class="form-select" required>
-                <option value="" disabled selected>Seleccione un cliente</option>
+                <option value="" disabled
+                        th:selected="${orden.cliente == null or orden.cliente.id == null}">
+                    Seleccione un cliente
+                </option>
                 <option th:each="cliente : ${clientes}"
                         th:value="${cliente.id}"
-                        th:text="${cliente.nombreCompleto}">
+                        th:text="${cliente.nombreCompleto}"
+                        th:selected="${orden.cliente != null and cliente.id == orden.cliente.id}">
+                </option>
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Vehículo (Placa)</label>
+            <select th:field="*{vehiculo.id}" class="form-select" required>
+                <option value="" disabled
+                        th:selected="${orden.vehiculo == null or orden.vehiculo.id == null}">
+                    Seleccione una placa
+                </option>
+                <option th:each="vehiculo : ${vehiculos}"
+                        th:value="${vehiculo.id}"
+                        th:text="${vehiculo.placa}"
+                        th:selected="${orden.vehiculo != null and vehiculo.id == orden.vehiculo.id}">
                 </option>
             </select>
         </div>

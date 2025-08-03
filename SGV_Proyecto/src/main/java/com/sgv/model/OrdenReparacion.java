@@ -24,6 +24,11 @@ public class OrdenReparacion {
     @NotNull(message = "Debe seleccionar un cliente")
     private Cliente cliente;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vehiculo_id", nullable = false)
+    @NotNull(message = "Debe seleccionar un vehículo")
+    private Vehiculo vehiculo;
+
     // Getters y setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -39,4 +44,8 @@ public class OrdenReparacion {
 
     public Cliente getCliente() { return cliente; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
+
+    public Vehiculo getVehiculo() { return vehiculo; }
+    public void setVehiculo(Vehiculo vehiculo) { this.vehiculo = vehiculo; }
 }
+
