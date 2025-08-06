@@ -14,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
+import java.util.List;
+
 
 
 import java.util.Optional;
@@ -75,9 +77,13 @@ public class VehiculoController {
         vehiculoService.guardar(vehiculo);
         return "redirect:/admin/vehiculos/cliente/" + clienteId;
     }
-
-
-
+    
+    // Devuelve los vehículos de un cliente en formato JSON
+    @GetMapping("/cliente/{clienteId}/placas")
+    @ResponseBody
+    public List<Vehiculo> obtenerVehiculosPorCliente(@PathVariable Long clienteId) {
+        return vehiculoService.obtenerPorClienteId(clienteId);
+    }
 
 
 }

@@ -13,7 +13,7 @@
         <!-- Cliente -->
         <div class="col-md-6">
             <label class="form-label">Cliente</label>
-            <select name="cliente.id" class="form-select" required>
+            <select id="clienteSelect" name="cliente.id" class="form-select" required>
                 <option value="" disabled selected>Seleccione un cliente</option>
                 <option th:each="cliente : ${clientes}" 
                         th:value="${cliente.id}" 
@@ -25,14 +25,12 @@
         <!-- Vehículo (Placa) -->
         <div class="col-md-6">
             <label class="form-label">Vehículo (Placa)</label>
-            <select name="vehiculo.id" class="form-select" required>
+            <select id="vehiculoSelect" name="vehiculo.id" class="form-select" required>
                 <option value="" disabled selected>Seleccione una placa</option>
-                <option th:each="vehiculo : ${vehiculos}"
-                        th:value="${vehiculo.id}"
-                        th:text="${vehiculo.placa}">
-                </option>
+                <!-- Se cargarán por JavaScript -->
             </select>
         </div>
+
 
         <!-- Ítems -->
         <div class="col-12 mt-4">
@@ -126,5 +124,37 @@
             document.getElementById("total").innerText = total.toFixed(2);
         });
     </script>
+    
+    <script>
+    // Código existente (agregarItem, vistaPrevia, cálculo totales)... se mantiene igual
+
+    // Script para cargar placas al seleccionar cliente
+        document.addEventListener("DOMContentLoaded", function () {
+            const clienteSelect = document.getElementById("clienteSelect");
+            const vehiculoSelect = document.getElementById("vehiculoSelect");
+
+            clienteSelect.addEventListener("change", function () {
+                const clienteId = this.value;
+                vehiculoSelect.innerHTML = '<option value="">Seleccione una placa</option>';
+
+                if (clienteId) {
+                    fetch(`/admin/vehiculos/cliente/${clienteId}/placas`)
+                        .then(response => response.json())
+                        .then(vehiculos => {
+                            vehiculos.forEach(vehiculo => {
+                                const option = document.createElement("option");
+                                option.value = vehiculo.id;
+                                option.text = `${vehiculo.placa} - ${vehiculo.marca} ${vehiculo.modelo}`;
+                                vehiculoSelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => {
+                            console.error("Error al cargar placas:", error);
+                        });
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>
