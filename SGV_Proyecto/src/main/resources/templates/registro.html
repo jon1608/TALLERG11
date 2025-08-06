@@ -9,26 +9,25 @@
 <body class="container mt-5">
     <h2>Registrar Nuevo Usuario</h2>
     <form th:action="@{/registro}" th:object="${usuario}" method="post">
+        
         <div class="mb-3">
             <label for="nombreCompleto" class="form-label">Nombre completo</label>
             <input type="text" th:field="*{nombreCompleto}" class="form-control" required>
         </div>
+        
         <div class="mb-3">
             <label for="correo" class="form-label">Correo electrónico</label>
             <input type="email" th:field="*{correo}" class="form-control" required>
         </div>
+        
         <div class="mb-3">
             <label for="contrasena" class="form-label">Contraseña</label>
             <input type="password" th:field="*{contrasena}" class="form-control" required>
         </div>
-        <div class="mb-3">
-            <label for="rol" class="form-label">Rol</label>
-            <select th:field="*{rol}" class="form-control" required>
-                <option value="ADMIN">Admin</option>
-                <option value="CLIENTE">Cliente</option>
-                <option value="MECANICO">Mecánico</option>
-            </select>
-        </div>
+        
+        <input type="hidden" name="rol" value="ADMIN" />
+
+        
         <button type="submit" class="btn btn-primary">Registrar</button>
     </form>
 </body>

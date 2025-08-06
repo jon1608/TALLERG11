@@ -22,7 +22,7 @@ public class Usuario {
     private String contrasena;
 
     @NotBlank
-    private String rol; // ADMIN, MECANICO, CLIENTE
+    private String rol; // ADMIN
 
     // Getters y setters
     public Long getId() { return id; }

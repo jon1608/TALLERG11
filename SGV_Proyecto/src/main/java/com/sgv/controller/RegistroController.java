@@ -22,7 +22,11 @@ public class RegistroController {
 
     @PostMapping("/registro")
     public String guardarUsuario(@ModelAttribute("usuario") Usuario usuario) {
+        // Asignar el rol manualmente, ya que no se muestra en el formulario
+        usuario.setRol("ADMIN");
+
         usuarioRepository.save(usuario);
         return "redirect:/login";
     }
+
 }
