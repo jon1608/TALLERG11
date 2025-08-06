@@ -33,7 +33,7 @@
     <!-- Formulario para agregar vehículo -->
     <h4 class="mt-4">Agregar Vehículo</h4>
     <form th:action="@{/admin/vehiculos/guardar}" th:object="${vehiculo}" method="post" class="row g-3 needs-validation" novalidate>
-        <input type="hidden" th:name="clienteId" th:value="${cliente.id}" />
+        <input type="hidden" name="clienteId" th:value="${cliente.id}" /> 
 
         <div class="col-md-6">
             <label>Placa</label>

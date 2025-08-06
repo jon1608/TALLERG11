@@ -51,21 +51,33 @@ public class VehiculoController {
 
     // Guardar vehículo nuevo
    @PostMapping("/guardar")
-    public String guardarVehiculo(@Valid @ModelAttribute Vehiculo vehiculo, 
-                              BindingResult result,
-                              @RequestParam Long clienteId,
-                              Model model) {
-    if (result.hasErrors()) {
+    public String guardarVehiculo(@ModelAttribute Vehiculo vehiculo,
+                                  BindingResult result,
+                                  @RequestParam Long clienteId,
+                                  Model model) {
+
+        // ✅ Asignar el cliente antes de validar
         Optional<Cliente> cliente = clienteService.obtenerPorId(clienteId);
-        cliente.ifPresent(c -> model.addAttribute("cliente", c));
-        model.addAttribute("vehiculos", vehiculoService.obtenerPorClienteId(clienteId));
-        return "vehiculos_cliente";
+        cliente.ifPresent(vehiculo::setCliente);
+
+        // Validar luego de haber asignado el cliente
+        if (result.hasErrors()) {
+            System.out.println(">>> Hay errores en el formulario:");
+            result.getAllErrors().forEach(error -> {
+                System.out.println(" - " + error.getDefaultMessage());
+            });
+
+            cliente.ifPresent(c -> model.addAttribute("cliente", c));
+            model.addAttribute("vehiculos", vehiculoService.obtenerPorClienteId(clienteId));
+            return "vehiculos_cliente";
         }
 
-    Optional<Cliente> cliente = clienteService.obtenerPorId(clienteId);
-    cliente.ifPresent(vehiculo::setCliente);
-    vehiculoService.guardar(vehiculo);
-    return "redirect:/admin/vehiculos/cliente/" + clienteId;
+        vehiculoService.guardar(vehiculo);
+        return "redirect:/admin/vehiculos/cliente/" + clienteId;
     }
+
+
+
+
 
 }
