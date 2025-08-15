@@ -25,12 +25,10 @@
         <!-- Vehículo (Placa) -->
         <div class="col-md-6">
             <label class="form-label">Vehículo (Placa)</label>
-            <select id="vehiculoSelect" name="vehiculo.id" class="form-select" required>
-                <option value="" disabled selected>Seleccione una placa</option>
-                <!-- Se cargarán por JavaScript -->
+            <select id="vehiculoSelect" name="vehiculo.id" class="form-select" required disabled>
+                <option value="">-- Seleccione un cliente primero --</option>
             </select>
         </div>
-
 
         <!-- Ítems -->
         <div class="col-12 mt-4">
@@ -105,6 +103,7 @@
             form.submit();
         }
 
+        // Cálculo de totales en vivo
         document.addEventListener("input", () => {
             const cantidades = document.querySelectorAll(".cantidad");
             const precios = document.querySelectorAll(".precio");
@@ -125,35 +124,77 @@
         });
     </script>
     
+    <!-- Cliente -> Vehículos (combo dependiente) -->
     <script>
-    // Código existente (agregarItem, vistaPrevia, cálculo totales)... se mantiene igual
+      (function () {
+        const clienteSelect  = document.getElementById("clienteSelect");
+        const vehiculoSelect = document.getElementById("vehiculoSelect");
 
-    // Script para cargar placas al seleccionar cliente
-        document.addEventListener("DOMContentLoaded", function () {
-            const clienteSelect = document.getElementById("clienteSelect");
-            const vehiculoSelect = document.getElementById("vehiculoSelect");
+        function bloquearVehiculos(msg) {
+          vehiculoSelect.innerHTML = '';
+          const opt = document.createElement('option');
+          opt.value = '';
+          opt.textContent = msg || '-- Seleccione un cliente primero --';
+          vehiculoSelect.appendChild(opt);
+          vehiculoSelect.disabled = true;
+        }
 
-            clienteSelect.addEventListener("change", function () {
-                const clienteId = this.value;
-                vehiculoSelect.innerHTML = '<option value="">Seleccione una placa</option>';
-
-                if (clienteId) {
-                    fetch(`/admin/vehiculos/cliente/${clienteId}/placas`)
-                        .then(response => response.json())
-                        .then(vehiculos => {
-                            vehiculos.forEach(vehiculo => {
-                                const option = document.createElement("option");
-                                option.value = vehiculo.id;
-                                option.text = `${vehiculo.placa} - ${vehiculo.marca} ${vehiculo.modelo}`;
-                                vehiculoSelect.appendChild(option);
-                            });
-                        })
-                        .catch(error => {
-                            console.error("Error al cargar placas:", error);
-                        });
-                }
+        async function cargarVehiculos(clienteId, vehiculoSeleccionado) {
+          bloquearVehiculos('-- Cargando vehículos… --');
+          try {
+            const resp = await fetch(`/admin/vehiculos/cliente/${clienteId}/placas`, {
+              headers: { 'Accept': 'application/json' }
             });
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            const data = await resp.json(); // [{id, placa}]
+
+            vehiculoSelect.innerHTML = '';
+            if (!data || data.length === 0) {
+              bloquearVehiculos('-- Sin vehículos registrados --');
+              return;
+            }
+
+            const opt0 = document.createElement('option');
+            opt0.value = '';
+            opt0.textContent = '-- Seleccione --';
+            vehiculoSelect.appendChild(opt0);
+
+            data.forEach(v => {
+              const opt = document.createElement('option');
+              opt.value = v.id;
+              opt.textContent = v.placa; // ✅ solo placa (adiós "undefined undefined")
+              if (vehiculoSeleccionado && String(vehiculoSeleccionado) === String(v.id)) {
+                opt.selected = true;
+              }
+              vehiculoSelect.appendChild(opt);
+            });
+
+            vehiculoSelect.disabled = false;
+          } catch (e) {
+            console.error(e);
+            bloquearVehiculos('-- Error al cargar vehículos --');
+          }
+        }
+
+        // Cambio de cliente -> cargar placas
+        clienteSelect.addEventListener("change", function () {
+          const clienteId = this.value;
+          if (!clienteId) { bloquearVehiculos(); return; }
+          cargarVehiculos(clienteId, null);
         });
+
+        // Precarga si ya hay cliente seleccionado (edición / reintento)
+        window.addEventListener('DOMContentLoaded', () => {
+          const clientePre = clienteSelect.value;
+          // Si quieres preseleccionar vehículo en edición, puedes pasar su id aquí:
+          const vehiculoPre = null;
+          if (clientePre) {
+            cargarVehiculos(clientePre, vehiculoPre);
+          } else {
+            bloquearVehiculos();
+          }
+        });
+      })();
     </script>
 
 </body>

@@ -38,9 +38,31 @@
     <p><strong>IVA:</strong> ₡<span th:text="${#numbers.formatDecimal(factura.iva, 1, 2)}"></span></p>
     <p><strong>Total:</strong> ₡<span th:text="${#numbers.formatDecimal(factura.total, 1, 2)}"></span></p>
 
-    <div class="mt-4">
+    <div class="mt-4 d-flex gap-2">
         <a th:href="@{/menu}" class="btn btn-primary">Volver al Menú</a>
         <a th:href="@{/admin/facturas}" class="btn btn-secondary">Volver a Facturas</a>
+
+        <!-- ✅ Botón GUARDAR FACTURA desde la vista de detalle -->
+        <form th:action="@{/admin/facturas/guardar}" method="post" th:object="${factura}" class="d-inline">
+
+            <!-- Si usas Spring Security con CSRF habilitado, descomenta: -->
+            <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"> -->
+
+            <!-- Identificadores principales -->
+            <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:field="*{cliente.id}">
+            <input type="hidden" th:field="*{vehiculo.id}">
+
+            <!-- Ítems (reenviados tal cual) -->
+            <div th:each="item,iter : *{items}">
+                <input type="hidden" th:name="${'items[' + iter.index + '].descripcion'}"   th:value="${item.descripcion}">
+                <input type="hidden" th:name="${'items[' + iter.index + '].cantidad'}"      th:value="${item.cantidad}">
+                <input type="hidden" th:name="${'items[' + iter.index + '].precioUnitario'}" th:value="${item.precioUnitario}">
+            </div>
+
+            <!-- Totales no son necesarios, el controller los recalcula -->
+            <button type="submit" class="btn btn-success">Guardar Factura</button>
+        </form>
     </div>
 </body>
 </html>
