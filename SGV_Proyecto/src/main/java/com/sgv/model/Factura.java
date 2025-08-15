@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "factura")
 public class Factura {
 
     @Id
@@ -32,7 +33,11 @@ public class Factura {
     @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemFactura> items = new ArrayList<>();
 
-    // Getters y setters
+    /* ===== NUEVO: relación con pagos ===== */
+    @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Pago> pagos = new ArrayList<>();
+
+    /* ===== Getters/Setters ===== */
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -59,9 +64,38 @@ public class Factura {
     public void setItems(List<ItemFactura> items) {
         this.items = items;
         if (items != null) {
-            for (ItemFactura item : items) {
-                item.setFactura(this);
-            }
+            for (ItemFactura item : items) item.setFactura(this);
         }
+    }
+
+    public List<Pago> getPagos() { return pagos; }
+    public void setPagos(List<Pago> pagos) {
+        this.pagos = pagos;
+        if (pagos != null) {
+            for (Pago p : pagos) p.setFactura(this);
+        }
+    }
+    public void addPago(Pago pago) {
+        if (pago != null) {
+            pago.setFactura(this);
+            this.pagos.add(pago);
+        }
+    }
+
+    /* ===== Conveniencia (no mapeados) ===== */
+
+    @Transient
+    public double getTotalPagado() {
+        if (pagos == null) return 0d;
+        // Sumamos solo pagos confirmados
+        return pagos.stream()
+                .filter(p -> p.getEstado() == Pago.EstadoPago.CONFIRMADO)
+                .mapToDouble(Pago::getMonto)
+                .sum();
+    }
+
+    @Transient
+    public double getSaldoPendiente() {
+        return Math.max(0d, total - getTotalPagado());
     }
 }

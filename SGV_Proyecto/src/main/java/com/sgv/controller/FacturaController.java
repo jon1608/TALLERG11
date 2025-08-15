@@ -7,6 +7,7 @@ import com.sgv.model.Vehiculo;
 import com.sgv.service.ClienteService;
 import com.sgv.service.FacturaService;
 import com.sgv.service.VehiculoService;
+import com.sgv.service.PagoService; // ✅ importa PagoService
 
 import jakarta.validation.Valid;
 import java.util.Optional;
@@ -29,21 +30,21 @@ public class FacturaController {
     @Autowired
     private VehiculoService vehiculoService;
 
+    @Autowired
+    private PagoService pagoService; // ✅ inyección del servicio de pagos
+
     @GetMapping
     public String listarFacturas(Model model) {
         model.addAttribute("facturas", facturaService.obtenerTodas());
-        return "facturas"; // templates/facturas.html
+        return "facturas";
     }
 
     @GetMapping("/nueva")
     public String nuevaFactura(Model model) {
         Factura factura = new Factura();
-        // una fila vacía para ítems
         factura.getItems().add(new ItemFactura());
-
         model.addAttribute("factura", factura);
         model.addAttribute("clientes", clienteService.obtenerTodos());
-        // vehículos se cargan por AJAX según cliente
         return "form_factura";
     }
 
@@ -71,7 +72,7 @@ public class FacturaController {
                 if (clienteIdElegido == null || !clienteIdElegido.equals(clienteIdVehiculo)) {
                     result.rejectValue("vehiculo", null, "El vehículo no pertenece al cliente seleccionado.");
                 }
-                factura.setVehiculo(v); // sincroniza la entidad
+                factura.setVehiculo(v);
             }
         }
 
@@ -82,8 +83,6 @@ public class FacturaController {
 
         // --- Relación item -> factura y limpieza de filas vacías
         if (factura.getItems() != null) {
-            // Tus getters de ItemFactura parecen ser PRIMITIVOS (int/double),
-            // por eso NO se debe comparar con null.
             factura.getItems().removeIf(i ->
                 (i.getDescripcion() == null || i.getDescripcion().isBlank())
                 && i.getCantidad() <= 0
@@ -94,21 +93,18 @@ public class FacturaController {
             }
         }
 
-        // --- Cálculo de totales (primitivos)
+        // --- Cálculo de totales
         double subtotal = 0.0;
         if (factura.getItems() != null) {
             for (ItemFactura item : factura.getItems()) {
-                double cant   = item.getCantidad();       // int/double primitivo
-                double precio = item.getPrecioUnitario(); // double primitivo
+                double cant   = item.getCantidad();
+                double precio = item.getPrecioUnitario();
                 subtotal += cant * precio;
             }
         }
-        double iva = subtotal * 0.13;
-        double total = subtotal + iva;
-
         factura.setSubtotal(subtotal);
-        factura.setIva(iva);
-        factura.setTotal(total);
+        factura.setIva(subtotal * 0.13);
+        factura.setTotal(factura.getSubtotal() + factura.getIva());
 
         facturaService.guardar(factura);
         return "redirect:/admin/facturas";
@@ -116,7 +112,6 @@ public class FacturaController {
 
     @PostMapping("/preview")
     public String vistaPreviaFactura(@ModelAttribute("factura") Factura factura, Model model) {
-        // Enriquecer cliente y vehículo (opcional)
         if (factura.getCliente() != null && factura.getCliente().getId() != null) {
             factura.setCliente(clienteService.obtenerPorId(factura.getCliente().getId()).orElse(null));
         }
@@ -128,7 +123,6 @@ public class FacturaController {
             for (ItemFactura item : factura.getItems()) item.setFactura(factura);
         }
 
-        // Totales usando primitivos (sin null)
         double subtotal = 0.0;
         if (factura.getItems() != null) {
             for (ItemFactura item : factura.getItems()) {
@@ -150,12 +144,22 @@ public class FacturaController {
         facturaService.eliminar(id);
         return "redirect:/admin/facturas";
     }
-    
+
     @GetMapping("/ver/{id}")
     public String verFactura(@PathVariable Long id, Model model) {
         Factura factura = facturaService.obtenerPorId(id)
-                .orElseThrow(() -> new RuntimeException("Factura no encontrada con ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Factura no encontrada"));
         model.addAttribute("factura", factura);
+
+        // ✅ pagos para la tabla
+        model.addAttribute("pagos", pagoService.listarPorFactura(id));
+
+        // ✅ si tu Factura no tiene @Transient totalPagado/saldo, calcula aquí:
+        double totalPagado = pagoService.totalPagadoConfirmado(id);
+        double saldo = Math.max(0d, factura.getTotal() - totalPagado);
+        model.addAttribute("totalPagado", totalPagado);
+        model.addAttribute("saldo", saldo);
+
         return "detalle_factura";
     }
 }
