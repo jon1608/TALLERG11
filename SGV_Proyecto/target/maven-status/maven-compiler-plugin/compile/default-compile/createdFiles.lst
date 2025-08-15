@@ -14,6 +14,7 @@ com\sgv\controller\ClienteController.class
 com\sgv\service\VehiculoService.class
 com\sgv\model\OrdenReparacion.class
 com\sgv\SgvApplication.class
+com\sgv\controller\VehiculoController$VehiculoOption.class
 com\sgv\controller\LoginController.class
 com\sgv\controller\RedireccionController.class
 com\sgv\service\ClienteService.class

@@ -38,9 +38,10 @@ public class OrdenReparacionController {
         OrdenReparacion orden = new OrdenReparacion();
         orden.setCliente(new Cliente());
         orden.setVehiculo(new Vehiculo());
+
         model.addAttribute("orden", orden);
         model.addAttribute("clientes", clienteService.obtenerTodos());
-        model.addAttribute("vehiculos", vehiculoService.obtenerTodos());
+        // No cargamos todos los vehículos: el combo se llena por AJAX según el cliente
         return "form_orden";
     }
 
@@ -48,26 +49,35 @@ public class OrdenReparacionController {
     public String guardarOrden(@Valid @ModelAttribute("orden") OrdenReparacion orden,
                                BindingResult result, Model model) {
 
-        // Validar selección de cliente
+        // Validar cliente
         if (orden.getCliente() == null || orden.getCliente().getId() == null || orden.getCliente().getId() <= 0) {
             result.rejectValue("cliente", null, "Debe seleccionar un cliente válido.");
         }
 
-        // Validar selección de vehículo
+        // Validar vehículo
         if (orden.getVehiculo() == null || orden.getVehiculo().getId() == null || orden.getVehiculo().getId() <= 0) {
             result.rejectValue("vehiculo", null, "Debe seleccionar un vehículo válido.");
         } else {
             Optional<Vehiculo> vehiculoOpt = vehiculoService.obtenerPorId(orden.getVehiculo().getId());
-            if (vehiculoOpt.isPresent()) {
-                orden.setVehiculo(vehiculoOpt.get());
-            } else {
+            if (vehiculoOpt.isEmpty()) {
                 result.rejectValue("vehiculo", null, "El vehículo seleccionado no existe.");
+            } else {
+                Vehiculo vehiculo = vehiculoOpt.get();
+                // ✅ Validar que el vehículo pertenezca al cliente elegido
+                if (orden.getCliente() != null && orden.getCliente().getId() != null) {
+                    Long clienteIdElegido = orden.getCliente().getId();
+                    Long clienteIdDelVehiculo = (vehiculo.getCliente() != null) ? vehiculo.getCliente().getId() : null;
+                    if (clienteIdDelVehiculo == null || !clienteIdElegido.equals(clienteIdDelVehiculo)) {
+                        result.rejectValue("vehiculo", null, "El vehículo no pertenece al cliente seleccionado.");
+                    }
+                }
+                orden.setVehiculo(vehiculo); // mantener entidad sincronizada
             }
         }
 
         if (result.hasErrors()) {
+            // Reenviamos lista de clientes. El combo de vehículos se volverá a cargar por JS.
             model.addAttribute("clientes", clienteService.obtenerTodos());
-            model.addAttribute("vehiculos", vehiculoService.obtenerTodos());
             return "form_orden";
         }
 
@@ -81,7 +91,7 @@ public class OrdenReparacionController {
         if (orden.isPresent()) {
             model.addAttribute("orden", orden.get());
             model.addAttribute("clientes", clienteService.obtenerTodos());
-            model.addAttribute("vehiculos", vehiculoService.obtenerTodos());
+            // El JS de la vista cargará los vehículos del cliente preseleccionado y marcará el actual
             return "form_orden";
         }
         return "redirect:/mecanico/ordenes";
